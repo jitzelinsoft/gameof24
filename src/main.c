@@ -30,13 +30,13 @@ void searchFor24(int a, int b, int c, int d) {
     for (int firstOp = 0; firstOp < 4; firstOp++) {                                                   // First operator
         for (int secondOp = 0; secondOp < 4; secondOp++) {                                            // Second operator
             for (int thirdOp = 0; thirdOp < 4; thirdOp++) {                                           // Third operator
-                if (calculate(calculate(a, b, firstOp), calculate(c, d, thirdOp), secondOp) == 24) {  // (a.b).(c.d) '.' = operator
+                if (calculate(calculate(a, b, firstOp), calculate(c, d, thirdOp), secondOp) == 24) {  // (a.b).(c.d) --> '.' = operator
                     printf("((%d %c %d) %c (%d %c %d))\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
-                } else if (calculate(calculate(a, calculate(b, c, secondOp), firstOp), d, thirdOp) == 24) {  // (a.(b.c)).d
+                } else if (calculate(calculate(a, calculate(b, c, secondOp), firstOp), d, thirdOp) == 24) {  // (a.(b.c)).d --> '.' = operator
                     printf("((%d %c (%d %c %d) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
-                } else if (calculate(calculate(calculate(a, b, firstOp), c, secondOp), d, thirdOp) == 24) {  // (((a.b).c).d)
+                } else if (calculate(calculate(calculate(a, b, firstOp), c, secondOp), d, thirdOp) == 24) {  // (((a.b).c).d) --> '.' = operator
                     printf("(((%d %c %d) %c %d) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
                 }
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
         scanf("%d", &array[i]);
     }
 
-    /* Outputs all possible combinations for a b c d */
+    /* Checks for all possible combinations for a b c d */
     int a, b, c, d;
     for (int i1 = 0; i1 < 4; i1++) {
         a = array[i1];
