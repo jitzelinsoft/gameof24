@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 int calculate(int a, int b, int operator) {
+    /* Returns a calculation from a and b with the given operator */
     switch (operator) {
         case 0:  // '+'
             a = a + b;
@@ -21,11 +22,11 @@ int calculate(int a, int b, int operator) {
             }
             break;
     }
-
     return a;
 }
 
 void searchFor24(int a, int b, int c, int d) {
+    /* Searcher for a possible 24 with all possible combinations of the operators */
     char operators[4] = {'+', '-', '*', '/'};
     for (int firstOp = 0; firstOp < 4; firstOp++) {                                                   // First operator
         for (int secondOp = 0; secondOp < 4; secondOp++) {                                            // Second operator
@@ -34,7 +35,7 @@ void searchFor24(int a, int b, int c, int d) {
                     printf("((%d %c %d) %c (%d %c %d))\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
                 } else if (calculate(calculate(a, calculate(b, c, secondOp), firstOp), d, thirdOp) == 24) {  // (a.(b.c)).d --> '.' = operator
-                    printf("((%d %c (%d %c %d) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
+                    printf("(((%d %c (%d %c %d)) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
                 } else if (calculate(calculate(calculate(a, b, firstOp), c, secondOp), d, thirdOp) == 24) {  // (((a.b).c).d) --> '.' = operator
                     printf("(((%d %c %d) %c %d) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
@@ -54,15 +55,15 @@ int main(int argc, char *argv[]) {
 
     /* Checks for all possible combinations for a b c d */
     int a, b, c, d;
-    for (int i1 = 0; i1 < 4; i1++) {
-        a = array[i1];
-        for (int i2 = 0; i2 < 4; i2++) {
-            b = array[i2];
-            for (int i3 = 0; i3 < 4; i3++) {
-                c = array[i3];
-                for (int i4 = 0; i4 < 4; i4++) {
-                    d = array[i4];
-                    if (i1 != i2 && i1 != i3 && i1 != i4 && i2 != i3 && i2 != i4 && i3 != i4) {
+    for (int i = 0; i < 4; i++) {
+        a = array[i];
+        for (int j = 0; j < 4; j++) {
+            b = array[j];
+            for (int k = 0; k < 4; k++) {
+                c = array[k];
+                for (int l = 0; l < 4; l++) {
+                    d = array[l];
+                    if (i != j && i != k && i != l && j != k && j != l && k != l) {  // Checks if a, b, c or d are not referencing to the same variable
                         searchFor24(a, b, c, d);
                     }
                 }
