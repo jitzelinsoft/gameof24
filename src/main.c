@@ -1,27 +1,24 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 int calculate(int a, int b, int operator) {
-    char operators[4] = {'+', '-', '*', '/'};
-    switch (operators[operator]) {
-        case '+':
+    switch (operator) {
+        case 0:  // '+'
             a = a + b;
             break;
-        case '-':
+        case 1:  // '-'
             a = a - b;
             break;
-        case '*':
+        case 2:  // '*'
             a = a * b;
             break;
-        case '/':
+        case 3:  // '/'
             if (b != 0 && a % b == 0) {
                 a = a / b;
             } else {
-                a = 100000000;  // Just to make the thing not 24
+                a = nan;
             }
-            break;
-
-        default:
             break;
     }
 
@@ -30,19 +27,17 @@ int calculate(int a, int b, int operator) {
 
 void searchFor24(int a, int b, int c, int d) {
     char operators[4] = {'+', '-', '*', '/'};
-    // printf("%d %d %d %d\n", a, b, c, d);
-    for (int i = 0; i < 4; i++) {          // i = First operator
-        for (int z = 0; z < 4; z++) {      // z = Second operator
-            for (int y = 0; y < 4; y++) {  // y = last operator
-                // printf("(%d %c %d) %c (%d %c %d) = %d = %d %c %d\n", a, operators[i], b, operators[z], c, operators[y], d, calculate(calculate(a, b, i), calculate(c, d, y), z), calculate(a, b, i), operators[z], calculate(c, d, y));
-                if (calculate(calculate(a, b, i), calculate(c, d, y), z) == 24) {  // (a.b).(c.d) '.' = operator
-                    printf("((%d %c %d) %c (%d %c %d))\n", a, operators[i], b, operators[z], c, operators[y], d);
+    for (int firstOp = 0; firstOp < 4; firstOp++) {                                                   // First operator
+        for (int secondOp = 0; secondOp < 4; secondOp++) {                                            // Second operator
+            for (int thirdOp = 0; thirdOp < 4; thirdOp++) {                                           // Third operator
+                if (calculate(calculate(a, b, firstOp), calculate(c, d, thirdOp), secondOp) == 24) {  // (a.b).(c.d) '.' = operator
+                    printf("((%d %c %d) %c (%d %c %d))\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
-                } else if (calculate(calculate(a, calculate(b, c, z), i), d, y) == 24) {  // (a.(b.c)).d
-                    printf("((%d %c (%d %c %d) %c %d)\n", a, operators[i], b, operators[z], c, operators[y], d);
+                } else if (calculate(calculate(a, calculate(b, c, secondOp), firstOp), d, thirdOp) == 24) {  // (a.(b.c)).d
+                    printf("((%d %c (%d %c %d) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
-                } else if (calculate(calculate(calculate(a, b, i), c, z), d, y) == 24) {  // (((a.b).c).d)
-                    printf("(((%d %c %d) %c %d) %c %d)\n", a, operators[i], b, operators[z], c, operators[y], d);
+                } else if (calculate(calculate(calculate(a, b, firstOp), c, secondOp), d, thirdOp) == 24) {  // (((a.b).c).d)
+                    printf("(((%d %c %d) %c %d) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
                 }
             }
@@ -67,7 +62,7 @@ int main(int argc, char *argv[]) {
                 c = array[i3];
                 for (int i4 = 0; i4 < 4; i4++) {
                     d = array[i4];
-                    if (i1 != i2 && i1 != i3 && i1 != i4 && i2 != i3 && i2 != i4 && i3 != i4 && i4 != i3) {
+                    if (i1 != i2 && i1 != i3 && i1 != i4 && i2 != i3 && i2 != i4 && i3 != i4) {
                         searchFor24(a, b, c, d);
                     }
                 }
