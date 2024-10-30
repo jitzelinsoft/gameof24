@@ -2,42 +2,41 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TARGET 24  // Define a constant for the target value
+
 int calculate(int a, int b, int operator) {
-    /* Returns a calculation from a and b with the given operator */
+    // Returns a calculation of a and b with the given operator
     switch (operator) {
         case 0:  // '+'
-            a = a + b;
-            break;
+            return a + b;
         case 1:  // '-'
-            a = a - b;
-            break;
+            return a - b;
         case 2:  // '*'
-            a = a * b;
-            break;
+            return a * b;
         case 3:  // '/'
-            if (b != 0 && a % b == 0) {
-                a = a / b;
-            } else {
-                a = nan;
-            }
-            break;
+            return (b != 0 && a % b == 0) ? a / b : nan;
+        default:
+            return nan;
     }
-    return a;
 }
 
 void searchFor24(int a, int b, int c, int d) {
-    /* Searcher for a possible 24 with all possible combinations of the operators */
+    // Searches for a possible 24 with all possible combinations of the operators
     char operators[4] = {'+', '-', '*', '/'};
-    for (int firstOp = 0; firstOp < 4; firstOp++) {                                                   // First operator
-        for (int secondOp = 0; secondOp < 4; secondOp++) {                                            // Second operator
-            for (int thirdOp = 0; thirdOp < 4; thirdOp++) {                                           // Third operator
-                if (calculate(calculate(a, b, firstOp), calculate(c, d, thirdOp), secondOp) == 24) {  // (a.b).(c.d) --> '.' = operator
+    for (int firstOp = 0; firstOp < 4; firstOp++) {
+        for (int secondOp = 0; secondOp < 4; secondOp++) {
+            for (int thirdOp = 0; thirdOp < 4; thirdOp++) {
+                int result1 = calculate(calculate(a, b, firstOp), calculate(c, d, thirdOp), secondOp);
+                int result2 = calculate(calculate(a, calculate(b, c, secondOp), firstOp), d, thirdOp);
+                int result3 = calculate(calculate(calculate(a, b, firstOp), c, secondOp), d, thirdOp);
+
+                if (result1 == TARGET) {
                     printf("((%d %c %d) %c (%d %c %d))\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
-                } else if (calculate(calculate(a, calculate(b, c, secondOp), firstOp), d, thirdOp) == 24) {  // (a.(b.c)).d --> '.' = operator
-                    printf("(((%d %c (%d %c %d)) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
+                } else if (result2 == TARGET) {
+                    printf("((%d %c (%d %c %d)) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
-                } else if (calculate(calculate(calculate(a, b, firstOp), c, secondOp), d, thirdOp) == 24) {  // (((a.b).c).d) --> '.' = operator
+                } else if (result3 == TARGET) {
                     printf("(((%d %c %d) %c %d) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
                 }
@@ -46,26 +45,27 @@ void searchFor24(int a, int b, int c, int d) {
     }
 }
 
-int main(int argc, char *argv[]) {
+int main() {
     int array[4];
-    /* Inputs into array */
+    // Inputs into array
     for (int i = 0; i < 4; i++) {
         scanf("%d", &array[i]);
     }
 
-    /* Checks for all possible combinations for a b c d */
+    // Check all possible combinations for a, b, c, d
     int a, b, c, d;
     for (int i = 0; i < 4; i++) {
         a = array[i];
         for (int j = 0; j < 4; j++) {
+            if (j == i) continue;
             b = array[j];
             for (int k = 0; k < 4; k++) {
+                if (k == i || k == j) continue;
                 c = array[k];
                 for (int l = 0; l < 4; l++) {
+                    if (l == i || l == j || l == k) continue;
                     d = array[l];
-                    if (i != j && i != k && i != l && j != k && j != l && k != l) {  // Checks if a, b, c or d are not referencing to the same variable
-                        searchFor24(a, b, c, d);
-                    }
+                    searchFor24(a, b, c, d);
                 }
             }
         }
