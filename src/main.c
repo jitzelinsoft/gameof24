@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TARGET 24  // Define a constant for the target value
-
 int calculate(int a, int b, int operator) {
     // Returns a calculation of a and b with the given operator
     switch (operator) {
@@ -30,13 +28,13 @@ void searchFor24(int a, int b, int c, int d) {
                 int result2 = calculate(calculate(a, calculate(b, c, secondOp), firstOp), d, thirdOp);
                 int result3 = calculate(calculate(calculate(a, b, firstOp), c, secondOp), d, thirdOp);
 
-                if (result1 == TARGET) {
+                if (result1 == 24) {
                     printf("((%d %c %d) %c (%d %c %d))\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
-                } else if (result2 == TARGET) {
+                } else if (result2 == 24) {
                     printf("((%d %c (%d %c %d)) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
-                } else if (result3 == TARGET) {
+                } else if (result3 == 24) {
                     printf("(((%d %c %d) %c %d) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
                     exit(EXIT_SUCCESS);
                 }
