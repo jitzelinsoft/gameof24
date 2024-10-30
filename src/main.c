@@ -6,20 +6,15 @@
 #define MAX_LENGTH 4
 #define MAX_STEPS 3
 #define COMP_LENGTH 6
-// #define NDEBUG
+#define NDEBUG
 
 #include <stdio.h>
 
 typedef struct {
-    char operator;
-    double num;
+    double x;
+    double y;
+    char op;
 } Step;
-
-typedef struct {
-    double firstNum;
-    Step data[MAX_STEPS];
-    int currentSteps;
-} Steps;
 
 #ifndef NDEBUG
 void debugPrintArray(char *name, double arr[4], int length) {
@@ -33,12 +28,12 @@ void debugPrintArray(char *name, double arr[4], int length) {
     printf("}\n");
 }
 
-void debugPrintSteps(Steps s) {
-    printf("s.firstNum = %.2lf\n", s.firstNum);
+void debugPrintSteps(Step s[MAX_STEPS]) {
+    printf("Steps = {\n");
     for (int i = 0; i < MAX_STEPS; i++) {
-        printf("s.step[i].operator = '%c'\n", s.data[i].operator);
-        printf("s.step[i].num = %2.lf\n", s.data[i].num);
+        printf("\t%.2lf %c %.2lf,\n", s[i].x, s[i].op, s[i].y);
     }
+    printf("}\n");
 }
 #endif /* ifndef NDEBUG */
 
@@ -57,11 +52,6 @@ void swapIndices(double a[MAX_LENGTH], int x, int y) {
     a[y] = t;
 }
 
-void addStep(Steps *s, double num, char operator) {
-    s->data[s->currentSteps] = (Step){.num = num, .operator= operator};
-    s->currentSteps++;
-}
-
 char getOperator(int k) {
     switch (k) {
         case 0:
@@ -78,77 +68,59 @@ char getOperator(int k) {
     return -1;
 }
 
-void answer(double numbers[MAX_LENGTH], int length, Steps *s, int *found) {
-    if (*found == 1) {
-        return;
-    }
-
-    if (length == 1 && (int)numbers[0] == 24) {
-        *found = 1;
-        return;
-    }
-
-    Steps cSteps = *s;
-
-    // Loop over all permuatations
-    for (int i = 0; i < length; i++) {
-        for (int j = i + 1; j < length; j++) {
-            // Create the permuatation
-            double perm[MAX_LENGTH] = {numbers[0], numbers[1],
-                                       numbers[2], numbers[3]};
-            swapIndices(perm, i, j);
+/*
+ * This function returns if a solution to can be found to a 24 game input. In
+ * this process it mutates the steps variable to give an explanation about the
+ * answer.
+ */
+int isAnswerFound(double n[MAX_LENGTH], int l, Step steps[MAX_STEPS]) {
 #ifndef NDEBUG
-            debugPrintArray("perm", perm, length);
+    debugPrintArray("numbers", n, l);
 #endif /* ifndef NDEBUG */
 
-            if (length == 4) {
-                cSteps.firstNum = perm[0];
-            }
+    // Base case
+    if (l == 1) {
+        return (n[0] - 24 >= 0 && n[0] - 24 < 0.001);
+    }
 
-            // Calculate all possible computations
+    for (int i = 0; i < l; i++) {
+        for (int j = i + 1; j < l; j++) {
+            // Generate a permutation of the original array
+            double perm[MAX_LENGTH] = {n[0], n[1], n[2], n[3]};
+            swapIndices(perm, i, j);
+
+            // Get all the computations
             double answers[COMP_LENGTH];
             computeAnswers(answers, perm[0], perm[1]);
 
-            // Call this function recursively with a new array
+            double new[MAX_LENGTH];
             for (int k = 0; k < COMP_LENGTH; k++) {
-                Steps ccSteps = cSteps;
-
-                double new[MAX_LENGTH];
                 new[0] = answers[k];
                 new[1] = perm[2];
                 new[2] = perm[3];
 
-                addStep(&ccSteps, perm[1], getOperator(k));
-#ifndef NDEBUG
-                debugPrintArray("new", new, length - 1);
-#endif /* ifndef NDEBUG */
-                answer(new, length - 1, &ccSteps, found);
-
-                if (*found) {
-                    *s = ccSteps;
-                    return;
+                steps[MAX_LENGTH - l] = (Step){.x = perm[0], .y = perm[1], .op = getOperator(k)};
+                if (isAnswerFound(new, l - 1, steps)) {
+                    return 1;
                 }
             }
         }
     }
+
+    return 0;
 }
 
 int main(int argc, char *argv[]) {
     double n[4];
-    int found = 0;
     scanf("%lf %lf %lf %lf", &n[0], &n[1], &n[2], &n[3]);
 
-    Steps s;
-    s.currentSteps = 0;
-    answer(n, MAX_LENGTH, &s, &found);
+    Step s[MAX_STEPS];
 
+    if (isAnswerFound(n, MAX_LENGTH, s)) {
 #ifndef NDEBUG
-    debugPrintSteps(s);
+        debugPrintSteps(s);
 #endif /* ifndef NDEBUG */
-    if (found) {
-        printf("(((%.0lf%c%.0lf)%c%.0lf)%c%.0lf)\n", s.firstNum,
-               s.data[0].operator, s.data[0].num, s.data[1].operator,
-               s.data[1].num, s.data[2].operator, s.data[2].num);
+        printf("(((%.0lf%c%.0lf)%c%.0lf)%c%.0lf)\n", s[0].x, s[0].op, s[0].y, s[1].op, s[1].x, s[2].op, s[2].x);
     } else {
         printf("No solution.\n");
     }

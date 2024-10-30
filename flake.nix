@@ -52,12 +52,12 @@
             src = ./.;
             makefile = ./Makefile;
             buildInputs = with pkgs; [ gcc ];
-            makeFlags = ["build"];
+            makeFlags = [ "build" ];
             installPhase = ''
-                mkdir -p $out/bin
-                ls -la
-                cp bin/${name} $out/bin/${name}
-              '';
+              mkdir -p $out/bin
+              ls -la
+              cp bin/${name} $out/bin/${name}
+            '';
           };
         }
       );
