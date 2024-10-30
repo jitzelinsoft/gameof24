@@ -1,8 +1,22 @@
+//#define NDEBUG
 #define MAX_SIZE 4
 
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef NDEBUG
+void debugPrintArray(char *name, int arr[4], int length) {
+    printf("%s = {", name);
+    for (int i = 0; i < length; i++) {
+        printf("%d", arr[i]);
+        if (i != length - 1) {
+            printf(",");
+        }
+    }
+    printf("}\n");
+}
+#endif /* ifndef NDEBUG */
 
 int calculate(int a, int b, int operator) {
     // Returns a calculation of a and b with the given operator
@@ -45,21 +59,35 @@ void searchFor24(int a, int b, int c, int d) {
     }
 }
 
-void swapIndices(int arr[MAX_SIZE], int i, int j) {
+void swap(int nums[MAX_SIZE], int i, int j) {
+    int t = nums[i];
+    nums[i] = nums[j];
+    nums[j] = t;
 }
 
 int main() {
     int nums[MAX_SIZE];
     scanf("%d %d %d %d", &nums[0], &nums[1], &nums[2], &nums[3]);
 
-    // Loop over all permutations of the given integer array
-    for (int i = 0; i < MAX_SIZE; i++) {
-        for (int j = i + 1; j < MAX_SIZE; j++) {
-            int copied[MAX_SIZE] = {nums[0], nums[1], nums[2], nums[3]};
-            int t = copied[i];
-            copied[i] = copied[j];
-            copied[j] = t;
-            searchFor24(copied[0], copied[1], copied[2], copied[3]);
+    int c[4] = {0,0,0,0};
+
+    // Loop over all permutations
+    for (int i = 1; i < MAX_SIZE;) {
+        if (c[i] < i) {
+            if (i % 2) {
+                swap(nums, 0, i);
+            } else {
+                swap(nums, c[i], i);
+            }
+
+            // Next permutation available here
+            searchFor24(nums[0], nums[1], nums[2], nums[3]);
+
+            c[i] += 1;
+            i = 1;
+        } else {
+            c[i] = 0;
+            i++;
         }
     }
 
