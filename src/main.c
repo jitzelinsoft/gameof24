@@ -1,3 +1,5 @@
+#define MAX_SIZE 4
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,29 +45,21 @@ void searchFor24(int a, int b, int c, int d) {
     }
 }
 
-int main() {
-    int array[4];
-    // Inputs into array
-    for (int i = 0; i < 4; i++) {
-        scanf("%d", &array[i]);
-    }
+void swapIndices(int arr[MAX_SIZE], int i, int j) {
+}
 
-    // Check all possible combinations for a, b, c, d
-    int a, b, c, d;
-    for (int i = 0; i < 4; i++) {
-        a = array[i];
-        for (int j = 0; j < 4; j++) {
-            if (j == i) continue;
-            b = array[j];
-            for (int k = 0; k < 4; k++) {
-                if (k == i || k == j) continue;
-                c = array[k];
-                for (int l = 0; l < 4; l++) {
-                    if (l == i || l == j || l == k) continue;
-                    d = array[l];
-                    searchFor24(a, b, c, d);
-                }
-            }
+int main() {
+    int nums[MAX_SIZE];
+    scanf("%d %d %d %d", &nums[0], &nums[1], &nums[2], &nums[3]);
+
+    // Loop over all permutations of the given integer array
+    for (int i = 0; i < MAX_SIZE; i++) {
+        for (int j = i + 1; j < MAX_SIZE; j++) {
+            int copied[MAX_SIZE] = {nums[0], nums[1], nums[2], nums[3]};
+            int t = copied[i];
+            copied[i] = copied[j];
+            copied[j] = t;
+            searchFor24(copied[0], copied[1], copied[2], copied[3]);
         }
     }
 
