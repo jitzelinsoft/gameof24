@@ -82,6 +82,7 @@
             packages = with pkgs; [
               gcc
               valgrind
+              bc
             ];
           };
         }
