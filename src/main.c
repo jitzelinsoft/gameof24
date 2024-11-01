@@ -53,6 +53,7 @@ void swap(int nums[MAX_SIZE], int i, int j) {
 
 int main() {
     int nums[MAX_SIZE];
+    // Inputs into array and checks for invalid inputs
     for (int i = 0; i < MAX_SIZE; i++) {
         scanf("%d", &nums[i]);
         if (nums[i] < 1 || nums[i] > 10) {
