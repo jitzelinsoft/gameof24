@@ -1,22 +1,8 @@
-//#define NDEBUG
 #define MAX_SIZE 4
 
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifndef NDEBUG
-void debugPrintArray(char *name, int arr[4], int length) {
-    printf("%s = {", name);
-    for (int i = 0; i < length; i++) {
-        printf("%d", arr[i]);
-        if (i != length - 1) {
-            printf(",");
-        }
-    }
-    printf("}\n");
-}
-#endif /* ifndef NDEBUG */
 
 int calculate(int a, int b, int operator) {
     // Returns a calculation of a and b with the given operator
@@ -67,9 +53,15 @@ void swap(int nums[MAX_SIZE], int i, int j) {
 
 int main() {
     int nums[MAX_SIZE];
-    scanf("%d %d %d %d", &nums[0], &nums[1], &nums[2], &nums[3]);
+    for (int i = 0; i < MAX_SIZE; i++) {
+        scanf("%d", &nums[i]);
+        if (nums[i] < 1 || nums[i] > 10) {
+            printf("Invalid input\n");
+            return 0;
+        }
+    }
 
-    int c[4] = {0,0,0,0};
+    int c[4] = {0, 0, 0, 0};
 
     // Loop over all permutations
     for (int i = 1; i < MAX_SIZE;) {
