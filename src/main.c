@@ -1,11 +1,10 @@
-#define MAX_SIZE 4
-
-#include <math.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_SIZE 4
+
 int calculate(int a, int b, int operator) {
-    // Returns a calculation of a and b with the given operator
     switch (operator) {
         case 0:  // '+'
             return a + b;
@@ -14,15 +13,15 @@ int calculate(int a, int b, int operator) {
         case 2:  // '*'
             return a * b;
         case 3:  // '/'
-            return (b != 0 && a % b == 0) ? a / b : nan;
+            return (b != 0 && a % b == 0) ? a / b : INT_MIN;
         default:
-            return nan;
+            return INT_MIN;
     }
 }
 
-void searchFor24(int a, int b, int c, int d) {
-    // Searches for a possible 24 with all possible combinations of the operators
+int searchFor24(int a, int b, int c, int d) {
     char operators[4] = {'+', '-', '*', '/'};
+
     for (int firstOp = 0; firstOp < 4; firstOp++) {
         for (int secondOp = 0; secondOp < 4; secondOp++) {
             for (int thirdOp = 0; thirdOp < 4; thirdOp++) {
@@ -32,17 +31,18 @@ void searchFor24(int a, int b, int c, int d) {
 
                 if (result1 == 24) {
                     printf("((%d %c %d) %c (%d %c %d))\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
-                    exit(EXIT_SUCCESS);
+                    return 1;
                 } else if (result2 == 24) {
                     printf("((%d %c (%d %c %d)) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
-                    exit(EXIT_SUCCESS);
+                    return 1;
                 } else if (result3 == 24) {
                     printf("(((%d %c %d) %c %d) %c %d)\n", a, operators[firstOp], b, operators[secondOp], c, operators[thirdOp], d);
-                    exit(EXIT_SUCCESS);
+                    return 1;
                 }
             }
         }
     }
+    return 0;
 }
 
 void swap(int nums[MAX_SIZE], int i, int j) {
@@ -51,32 +51,15 @@ void swap(int nums[MAX_SIZE], int i, int j) {
     nums[j] = t;
 }
 
-int main() {
-    int nums[MAX_SIZE];
-    // Inputs into array and checks for invalid inputs
-    for (int i = 0; i < MAX_SIZE; i++) {
-        scanf("%d", &nums[i]);
-        if (nums[i] < 1 || nums[i] > 10) {
-            printf("Invalid input\n");
-            return 0;
-        }
-    }
+void findPermutations(int nums[MAX_SIZE]) {
+    int c[MAX_SIZE] = {0};
 
-    int c[4] = {0, 0, 0, 0};
-
-    // Loop over all permutations
     for (int i = 1; i < MAX_SIZE;) {
         if (c[i] < i) {
-            if (i % 2) {
-                swap(nums, 0, i);
-            } else {
-                swap(nums, c[i], i);
-            }
+            swap(nums, (i % 2) ? 0 : c[i], i);
+            if (searchFor24(nums[0], nums[1], nums[2], nums[3])) return;
 
-            // Next permutation available here
-            searchFor24(nums[0], nums[1], nums[2], nums[3]);
-
-            c[i] += 1;
+            c[i]++;
             i = 1;
         } else {
             c[i] = 0;
@@ -85,5 +68,18 @@ int main() {
     }
 
     printf("No solution\n");
+}
+
+int main() {
+    int nums[MAX_SIZE];
+
+    for (int i = 0; i < MAX_SIZE; i++) {
+        if (scanf("%d", &nums[i]) != 1 || nums[i] < 1 || nums[i] > 10) {
+            printf("Invalid input\n");
+            return 0;
+        }
+    }
+
+    findPermutations(nums);
     return 0;
 }
