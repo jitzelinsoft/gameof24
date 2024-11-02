@@ -8,7 +8,7 @@
 #include <string.h>
 
 typedef struct {
-    double value;
+    float value;
     char expr[EXPR_SIZE];
 } NumberWithExpression;
 
@@ -25,7 +25,7 @@ void debugPrintArray(char *name, NumberWithExpression n[MAX], int length) {
 }
 #endif /* ifndef NDEBUG */
 
-void computeAnswers(double answers[COMP_LENGTH], char expressions[COMP_LENGTH][EXPR_SIZE], NumberWithExpression x,
+void computeAnswers(float answers[COMP_LENGTH], char expressions[COMP_LENGTH][EXPR_SIZE], NumberWithExpression x,
                     NumberWithExpression y) {
     answers[0] = x.value + y.value;
     sprintf(expressions[0], "(%s+%s)", x.expr, y.expr);
@@ -80,7 +80,7 @@ int isAnswerFound(NumberWithExpression n[MAX], int l, char solution[EXPR_SIZE]) 
 #endif /* ifndef NDEBUG */
 
             // Compute new answers and new expresions
-            double answers[COMP_LENGTH];
+            float answers[COMP_LENGTH];
             char expressions[COMP_LENGTH][EXPR_SIZE];
             computeAnswers(answers, expressions, n[i], n[j]);
 
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
     char solution[EXPR_SIZE];
 
     for (int i = 0; i < 4; i++) {
-        scanf("%lf", &n[i].value);
+        scanf("%f", &n[i].value);
         char digit = '0' + (int)n[i].value;
         sprintf(n[i].expr, "%c", digit);
     }
