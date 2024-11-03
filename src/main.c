@@ -1,7 +1,7 @@
 #define MAX 4
 #define MAX_STEPS 3
 #define COMP_LENGTH 6
-#define EXPR_SIZE 14
+#define EXPR_SIZE 255
 
 #include <stdio.h>
 #include <string.h>
@@ -79,8 +79,15 @@ int main(int argc, char *argv[]) {
 
     for (int i = 0; i < 4; i++) {
         scanf("%f", &n[i].value);
-        char digit = '0' + (int)n[i].value;
-        sprintf(n[i].expr, "%c", digit);
+        char digit[3];
+        if (((int)n[i].value) == 10) {
+            digit[0] = '1', digit[1] = '0';
+            digit[2] = '\0';
+        } else {
+            digit[0] = '0' + (int)n[i].value;
+            digit[1] = '\0';
+        }
+        sprintf(n[i].expr, "%s", digit);
     }
 
     if (isAnswerFound(n, MAX, solution)) {
